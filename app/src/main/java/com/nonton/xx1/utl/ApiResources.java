@@ -20,13 +20,21 @@ public class ApiResources {
 
     String latestTvSeries = URL+"get_latest_tvseries?";
 
-    public String getComingsoon() {
-        return comingsoon;
+    public String getFeatured() {
+        return featured;
     }
 
+    public String getMostview() {
+        return mostview;
+    }
 
+    public void setMostview(String mostview) {
+        this.mostview = mostview;
+    }
 
-    String comingsoon = URL+"get_coming_soon?";
+    String  mostview= URL+"get_mostview_movies?";
+
+    String featured = URL+"get_featured?";
 
     String tvSeries = URL+"get_tvseries?"+API_SECRECT_KEY+"&&page=";
 

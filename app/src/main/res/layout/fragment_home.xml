@@ -186,11 +186,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Coming Soon"
+                        android:text="Most View"
                         android:textAppearance="@style/TextAppearance.Title" />
 
                     <Button
-                        android:id="@+id/btn_more_comingsoon"
+                        android:id="@+id/btn_more_mostv"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -202,11 +202,50 @@
 
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewcomingsoon"
+                    android:id="@+id/recyclerViewmv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"
                     android:scrollingCache="true" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/main_header_selector"
+
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/spacing_large"
+                    android:paddingRight="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Featured Movie"
+                        android:textAppearance="@style/TextAppearance.Title" />
+
+                    <Button
+                        android:id="@+id/btn_more_featured"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:minWidth="0dp"
+                        android:text="@string/more"
+                        android:textSize="13sp"
+                        android:textColor="@color/grey_60" />
+
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerfeatured"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollingCache="true" />
+
 
 
                 <LinearLayout

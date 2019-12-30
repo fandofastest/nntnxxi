@@ -1334,7 +1334,7 @@ public class DetailsActivity extends AppCompatActivity {
                         JSONObject jsonObject=downloadArray.getJSONObject(i);
 
                         CommonModels models=new CommonModels();
-                        models.setTitle(jsonObject.getString("label"));
+                        models.setTitle(jsonObject.getString("title"));
                         models.setStremURL(jsonObject.getString("download_url"));
                         listDownload.add(models);
                     }

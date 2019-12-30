@@ -67,6 +67,7 @@ import com.nonton.xx1.Config;
 import com.facebook.ads.*;
 
 import static com.android.volley.VolleyLog.TAG;
+import static com.android.volley.VolleyLog.v;
 
 
 public class HomeFragment extends Fragment {
@@ -81,15 +82,17 @@ public class HomeFragment extends Fragment {
     private Timer timer;
 
     private ShimmerFrameLayout shimmerFrameLayout;
-    private RecyclerView recyclerViewMovie,recyclerViewTv,recyclerViewTvSeries,recyclerViewGenre,recyclerViewgenrehome,recyclerViewMoviecomingsoon;
-    private HomePageAdapter adapterMovie,adapterSeries,adaptercomingsoon;
+    private RecyclerView recyclerViewMovie,recyclerViewTv,recyclerViewTvSeries,recyclerViewGenre,recyclerViewgenrehome,recyclerViewfeatured,rvmostview;
+    private HomePageAdapter adapterMovie,adapterSeries,adapterfeatured,adaptermostview;
     private LiveTvHomeAdapter adapterTv;
     private List<CommonModels> listMovie =new ArrayList<>();
-    private List<CommonModels> listcomingsoon =new ArrayList<>();
+    private List<CommonModels> listmostviewMovie =new ArrayList<>();
+
+    private List<CommonModels> listfeatured =new ArrayList<>();
     private List<CommonModels> listTv =new ArrayList<>();
     private List<CommonModels> listSeries =new ArrayList<>();
     private ApiResources apiResources;
-    private Button btnMoreMovie,btncomingsoon,btnMoreSeries;
+    private Button btnMoreMovie,btncomingsoon,btnMoreSeries,btnmoremostview,btnmorefeatured;
 
     private int checkPass =0;
     private GenreListhomeAdapter genrelistHomeAdapter;
@@ -131,7 +134,8 @@ public class HomeFragment extends Fragment {
 //        btnMoreSeries=view.findViewById(R.id.btn_more_series);
 //        btnMoreTv=view.findViewById(R.id.btn_more_tv);
         btnMoreMovie=view.findViewById(R.id.btn_more_movie);
-        btncomingsoon=view.findViewById(R.id.btn_more_comingsoon);
+        btnmorefeatured=view.findViewById(R.id.btn_more_featured);
+        btnmoremostview=view.findViewById(R.id.btn_more_mostv);
         shimmerFrameLayout=view.findViewById(R.id.shimmer_view_container);
         viewPager=view.findViewById(R.id.viewPager);
         indicator=view.findViewById(R.id.indicator);
@@ -176,14 +180,21 @@ public class HomeFragment extends Fragment {
         recyclerViewTv.setAdapter(adapterTv);
 
 
-        //----movie's recycler view-----------------
-        recyclerViewMoviecomingsoon = view.findViewById(R.id.recyclerViewcomingsoon);
-        recyclerViewMoviecomingsoon.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
-        recyclerViewMoviecomingsoon.setHasFixedSize(true);
-        recyclerViewMoviecomingsoon.setNestedScrollingEnabled(false);
-        adaptercomingsoon = new HomePageAdapter(getContext(), listcomingsoon);
-        recyclerViewMoviecomingsoon.setAdapter(adaptercomingsoon);
+             //----movie's recycler view-----------------
+        recyclerViewfeatured = view.findViewById(R.id.recyclerfeatured);
+        recyclerViewfeatured.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        recyclerViewfeatured.setHasFixedSize(true);
+        recyclerViewfeatured.setNestedScrollingEnabled(false);
+        adapterfeatured = new HomePageAdapter(getContext(), listfeatured);
+        recyclerViewfeatured.setAdapter(adapterfeatured);
 
+        //----movie's recycler view-----------------
+        rvmostview = view.findViewById(R.id.recyclerViewmv);
+        rvmostview.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        rvmostview.setHasFixedSize(true);
+        rvmostview.setNestedScrollingEnabled(false);
+        adaptermostview = new HomePageAdapter(getContext(), listmostviewMovie);
+        rvmostview.setAdapter(adaptermostview);
 
         //----movie's recycler view-----------------
         recyclerViewMovie = view.findViewById(R.id.recyclerView);
@@ -223,8 +234,9 @@ public class HomeFragment extends Fragment {
                 getSlider(apiResources.getSlider());
                 getLatestSeries();
                 getLatestMovie();
+                getmostview();
                 getDataByGenre();
-                getComingsoon();
+                getFeatured();
                 getAllGenre();
 
 
@@ -243,10 +255,13 @@ public class HomeFragment extends Fragment {
                 recyclerViewMovie.removeAllViews();
                 recyclerViewTv.removeAllViews();
                 recyclerViewTvSeries.removeAllViews();
+                recyclerViewfeatured.removeAllViews();
                 recyclerViewGenre.removeAllViews();
-
+                rvmostview.removeAllViews();
+                listmostviewMovie.clear();
                 listMovie.clear();
                 listSeries.clear();
+                listfeatured.clear();
                 listSlider.clear();
                 listTv.clear();
                 listGenre.clear();
@@ -256,6 +271,8 @@ public class HomeFragment extends Fragment {
                     getFeaturedTV();
                     getSlider(apiResources.getSlider());
                     getLatestSeries();
+                    getmostview();
+                    getFeatured();
                     getLatestMovie();
                     getDataByGenre();
                 }else {
@@ -297,11 +314,21 @@ public class HomeFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
-        btncomingsoon.setOnClickListener(new View.OnClickListener() {
+        btnmoremostview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),ItemMovieActivity.class);
-                intent.putExtra("url",apiResources.getComingsoon());
+                intent.putExtra("url",apiResources.getMostview());
+                intent.putExtra("title","Movies");
+                getActivity().startActivity(intent);
+            }
+        });
+
+        btnmorefeatured.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ItemMovieActivity.class);
+                intent.putExtra("url",apiResources.getFeatured());
                 intent.putExtra("title","Movies");
                 getActivity().startActivity(intent);
             }
@@ -724,13 +751,11 @@ public class HomeFragment extends Fragment {
         singleton.addToRequestQueue(stringRequest);
 
     }
-
-
-    private void getComingsoon(){
+    private void getmostview(){
 
 
 
-        final StringRequest stringRequest=new StringRequest(Request.Method.POST, apiResources.getComingsoon(), new Response.Listener<String>() {
+        final StringRequest stringRequest=new StringRequest(Request.Method.POST, apiResources.getMostview(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -749,9 +774,75 @@ public class HomeFragment extends Fragment {
                         models.setImdbrating(jsonObject1.getString("imdb_rating"));
                         models.setVideoType("movie");
                         models.setId(jsonObject1.getString("videos_id"));
-                        listcomingsoon.add(models);
+                        listmostviewMovie.add(models);
 
-                        adaptercomingsoon.notifyDataSetChanged();
+                        adaptermostview.notifyDataSetChanged();
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("kunciganda",Config.API_KEY);
+
+
+
+                return params;
+            }
+        };
+
+
+
+
+        singleton.addToRequestQueue(stringRequest);
+
+    }
+
+
+    private void getFeatured(){
+
+
+
+        final StringRequest stringRequest=new StringRequest(Request.Method.POST, apiResources.getFeatured(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                swipeRefreshLayout.setRefreshing(false);
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+
+                try {
+                    JSONArray jsonArray =new JSONArray(response);
+
+                    for (int i=0;i<jsonArray.length();i++){
+
+                        JSONObject jsonObject1= jsonArray.getJSONObject(i);
+                        CommonModels models =new CommonModels();
+                        models.setImageUrl(jsonObject1.getString("thumbnail_url"));
+                        models.setTitle(jsonObject1.getString("title"));
+                        models.setImdbrating(jsonObject1.getString("imdb_rating"));
+                        models.setVideoType("movie");
+                        models.setId(jsonObject1.getString("videos_id"));
+                        listfeatured.add(models);
+
+                        adapterfeatured.notifyDataSetChanged();
 
                     }
                 } catch (JSONException e) {
