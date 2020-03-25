@@ -42,6 +42,8 @@ import com.nonton.xx1.navfrag.CountryFragment;
 import com.nonton.xx1.navfrag.FavoriteFragment;
 import com.nonton.xx1.navfrag.GenreFragment;
 import com.nonton.xx1.navfrag.MainHomeFragment;
+import com.nonton.xx1.utl.ApiResources;
+import com.startapp.android.publish.adsCommon.StartAppAd;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
@@ -97,6 +99,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        }
 
+        if (ApiResources.startappstatus.equals("1")){
+
+            StartAppAd.showSplash(this, savedInstanceState);
+
+        }
 
 
 

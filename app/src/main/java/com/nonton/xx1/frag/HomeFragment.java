@@ -50,6 +50,9 @@ import com.nonton.xx1.utl.NetworkInst;
 import com.nonton.xx1.utl.ToastMsg;
 import com.nonton.xx1.utl.VolleySingleton;
 import com.squareup.picasso.Picasso;
+import com.startapp.android.publish.adsCommon.Ad;
+import com.startapp.android.publish.adsCommon.StartAppAd;
+import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONArray;
@@ -428,7 +431,7 @@ public class HomeFragment extends Fragment {
 
                     ApiResources.fanadStatus = jsonObject.getString("status");
                     ApiResources.fanBannerid = jsonObject.getString("fan_banner_ads_id");
-                    ApiResources.fanInterid = jsonObject.getString("fan_interstitial_ads_id");
+                    ApiResources.faninterid = jsonObject.getString("fan_interstitial_ads_id");
 
 //                    Toast.makeText(getActivity(),ApiResources.fanadStatus+ApiResources.fanBannerid+ApiResources.fanInterid , Toast.LENGTH_LONG).show();
 
@@ -1020,10 +1023,63 @@ public class HomeFragment extends Fragment {
 
                     if (models.getVideoType().equals("movie")){
 
-                        Intent intent=new Intent(getContext(), DetailsActivity.class);
-                        intent.putExtra("vType",models.getVideoType());
-                        intent.putExtra("id",models.getId());
-                        startActivity(intent);
+                        if (ApiResources.startappstatus.equals("1")){
+
+                            StartAppAd startAppAd = new StartAppAd(context);
+                            startAppAd.showAd(new AdDisplayListener() {
+                                @Override
+                                public void adHidden(com.startapp.android.publish.adsCommon.Ad ad) {
+
+
+
+
+                                    Intent intent=new Intent(getContext(), DetailsActivity.class);
+                                    intent.putExtra("vType",models.getVideoType());
+                                    intent.putExtra("id",models.getId());
+                                    startActivity(intent);
+
+
+
+                                }
+
+                                @Override
+                                public void adDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                                }
+
+                                @Override
+                                public void adClicked(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                                }
+
+                                @Override
+                                public void adNotDisplayed(Ad ad) {
+                                    Intent intent=new Intent(getContext(), DetailsActivity.class);
+                                    intent.putExtra("vType",models.getVideoType());
+                                    intent.putExtra("id",models.getId());
+                                    startActivity(intent);
+
+
+                                }
+                            });
+
+
+
+                        }else {
+                            Intent intent=new Intent(getContext(), DetailsActivity.class);
+                            intent.putExtra("vType",models.getVideoType());
+                            intent.putExtra("id",models.getId());
+                            startActivity(intent);
+
+
+                        }
+
+
+
+
+
+
+
 
                     }else {
 

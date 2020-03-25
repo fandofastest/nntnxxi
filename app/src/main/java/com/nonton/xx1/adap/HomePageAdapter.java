@@ -13,7 +13,11 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.nonton.xx1.DetailsActivity;
 import com.nonton.xx1.R;
 import com.nonton.xx1.mdl.CommonModels;
+import com.nonton.xx1.utl.ApiResources;
 import com.squareup.picasso.Picasso;
+import com.startapp.android.publish.adsCommon.Ad;
+import com.startapp.android.publish.adsCommon.StartAppAd;
+import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +55,64 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.Origin
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(ctx, DetailsActivity.class);
-                intent.putExtra("vType",obj.getVideoType());
-                intent.putExtra("id",obj.getId());
+                if (ApiResources.startappstatus.equals("1")){
 
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ctx.startActivity(intent);
+                    StartAppAd startAppAd = new StartAppAd(ctx);
+                    startAppAd.showAd(new AdDisplayListener() {
+                        @Override
+                        public void adHidden(Ad ad) {
+
+
+
+
+                            Intent intent=new Intent(ctx, DetailsActivity.class);
+                            intent.putExtra("vType",obj.getVideoType());
+                            intent.putExtra("id",obj.getId());
+
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
+
+
+                        }
+
+                        @Override
+                        public void adDisplayed(Ad ad) {
+
+                        }
+
+                        @Override
+                        public void adClicked(Ad ad) {
+
+                        }
+
+                        @Override
+                        public void adNotDisplayed(Ad ad) {
+                            Intent intent=new Intent(ctx, DetailsActivity.class);
+                            intent.putExtra("vType",obj.getVideoType());
+                            intent.putExtra("id",obj.getId());
+
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
+
+                        }
+                    });
+
+
+
+                }else {
+                    Intent intent=new Intent(ctx, DetailsActivity.class);
+                    intent.putExtra("vType",obj.getVideoType());
+                    intent.putExtra("id",obj.getId());
+
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    ctx.startActivity(intent);
+
+
+                }
+
+
+
+
 
             }
         });

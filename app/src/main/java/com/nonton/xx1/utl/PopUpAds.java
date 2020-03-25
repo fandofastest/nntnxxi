@@ -48,7 +48,7 @@ public class PopUpAds {
     public static void ShowfanInterstitialAds(Context context) {
 
 
-        final com.facebook.ads.InterstitialAd fanInterstitialAd = new com.facebook.ads.InterstitialAd(context,ApiResources.fanInterid);
+        final com.facebook.ads.InterstitialAd fanInterstitialAd = new com.facebook.ads.InterstitialAd(context,ApiResources.faninterid);
 
         fanInterstitialAd.setAdListener(new InterstitialAdListener() {
             @Override

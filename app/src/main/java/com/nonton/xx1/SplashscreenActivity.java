@@ -28,6 +28,10 @@ import com.google.android.gms.ads.AdRequest;
 import com.ixidev.gdpr.GDPRChecker;
 import com.nonton.xx1.R;
 import com.nonton.xx1.utl.ApiResources;
+import com.startapp.android.publish.adsCommon.AutoInterstitialPreferences;
+import com.startapp.android.publish.adsCommon.StartAppAd;
+import com.startapp.android.publish.adsCommon.StartAppSDK;
+import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -133,9 +137,9 @@ public class SplashscreenActivity extends AppCompatActivity {
 
                     ApiResources.fanadStatus = jsonObject.getString("status");
                     ApiResources.fanBannerid = jsonObject.getString("fan_banner_ads_id");
-                    ApiResources.fanInterid = jsonObject.getString("fan_interstitial_ads_id");
+                    ApiResources.faninterid = jsonObject.getString("fan_interstitial_ads_id");
 
-                    loadinterads(ApiResources.fanInterid);
+                    loadinterads(ApiResources.faninterid);
 
 //                    Toast.makeText(getActivity(),ApiResources.fanadStatus+ApiResources.fanBannerid+ApiResources.fanInterid , Toast.LENGTH_LONG).show();
 
@@ -150,6 +154,28 @@ public class SplashscreenActivity extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject jsonObject=response.getJSONObject("startapp");
+                    ApiResources.startappid = jsonObject.getString("startappid");
+                    ApiResources.startappstatus = jsonObject.getString("startappstatus");
+
+                    StartAppSDK.init(getContext(), ApiResources.startappid, true);
+                    StartAppSDK.setUserConsent (getContext(),
+                            "pas",
+                            System.currentTimeMillis(),
+                            true);
+                    StartAppAd.setAutoInterstitialPreferences(
+                            new AutoInterstitialPreferences()
+                                    .setSecondsBetweenAds(300)
+                    );
+
+                } catch (JSONException e) {
+                    Log.e("json", "ERROR");
+
+
                     e.printStackTrace();
                 }
 
@@ -256,8 +282,40 @@ public class SplashscreenActivity extends AppCompatActivity {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
-                finish();
+
+                StartAppAd startAppAd = new StartAppAd(getContext());
+                startAppAd.showAd(new AdDisplayListener() {
+                    @Override
+                    public void adHidden(com.startapp.android.publish.adsCommon.Ad ad) {
+                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void adDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                    }
+
+                    @Override
+                    public void adClicked(com.startapp.android.publish.adsCommon.Ad ad) {
+                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                        finish();
+
+                    }
+
+                    @Override
+                    public void adNotDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                        finish();
+
+                    }
+                })   ;
+
+
+
+
+
                 // Code to be executed when an ad request fails.
             }
 

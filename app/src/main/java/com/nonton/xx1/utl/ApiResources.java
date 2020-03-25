@@ -4,7 +4,7 @@ import com.nonton.xx1.Config;
 
 public class ApiResources {
 
-    public static String apk="",statusapp="1",adStatus="0",adMobBannerId="null", adMobInterstitialId="null", adMobPublisherId="null",fanadStatus="0",fanBannerid="null",fanInterid="null";
+    public static String apk="",statusapp="1",adStatus="0",adMobBannerId="null", adMobInterstitialId="null", adMobPublisherId="null",fanadStatus="0",fanBannerid="null",faninterid,startappid,startappstatus;
 
 
     String URL = Config.API_SERVER_URL;

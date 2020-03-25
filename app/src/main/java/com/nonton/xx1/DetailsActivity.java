@@ -534,7 +534,7 @@ public class DetailsActivity extends AppCompatActivity {
             BannerAds.ShowFanBannerAds(this, fanadView);
             PopUpAds.ShowfanInterstitialAds(this);
 //
-            fanInterstitialAd = new com.facebook.ads.InterstitialAd(this,ApiResources.fanInterid);
+            fanInterstitialAd = new com.facebook.ads.InterstitialAd(this,ApiResources.faninterid);
             fanInterstitialAd.loadAd();
 
             fanInterstitialAd.setAdListener(new InterstitialAdListener() {
