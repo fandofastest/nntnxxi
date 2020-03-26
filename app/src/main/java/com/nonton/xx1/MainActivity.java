@@ -6,6 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
 import com.facebook.ads.InterstitialAd;
@@ -27,10 +33,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -47,9 +58,14 @@ import com.startapp.android.publish.adsCommon.StartAppAd;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.nonton.xx1.utl.MyAppClass.getContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RatingDialogListener {
 
@@ -99,12 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        }
 
-        if (ApiResources.startappstatus.equals("1")){
-
-            StartAppAd.showSplash(this, savedInstanceState);
-
-        }
-
 
 
         //----init---------------------------
@@ -153,7 +163,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
+        if (ApiResources.startappstatus.equals("1")){
 
+            StartAppAd.showSplash(this, savedInstanceState);
+
+        }
 
 
 
@@ -477,4 +491,23 @@ private void showDialog() {
             Toast.makeText(this, " unable to find market app", Toast.LENGTH_LONG).show();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

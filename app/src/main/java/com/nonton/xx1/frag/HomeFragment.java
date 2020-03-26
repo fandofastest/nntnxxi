@@ -3,9 +3,11 @@ package com.nonton.xx1.frag;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
@@ -32,10 +34,12 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.ixidev.gdpr.GDPRChecker;
 import com.nonton.xx1.DetailsActivity;
 import com.nonton.xx1.ItemMovieActivity;
+import com.nonton.xx1.MainActivity;
 import com.nonton.xx1.R;
 import com.nonton.xx1.UpdateActivity;
 import com.nonton.xx1.adap.GenreHomeAdapter;
@@ -71,6 +75,7 @@ import com.facebook.ads.*;
 
 import static com.android.volley.VolleyLog.TAG;
 import static com.android.volley.VolleyLog.v;
+import static com.nonton.xx1.utl.MyAppClass.getContext;
 
 
 public class HomeFragment extends Fragment {
@@ -295,6 +300,13 @@ public class HomeFragment extends Fragment {
         getAdDetails(new ApiResources().getAdDetails());
 
 
+
+
+
+
+
+
+
     }
 
     private void loadAd(){
@@ -347,52 +359,7 @@ public class HomeFragment extends Fragment {
 //        });
 
     }
-    private void getStatusapp(String url){
 
-        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-
-                try {
-                    JSONObject jsonObject=response.getJSONObject("statusapp");
-
-                    ApiResources.statusapp = jsonObject.getString("statusapp");
-                    String apk = jsonObject.getString("apk");
-                    String nowpackage = jsonObject.getString("package");
-
-                    if (ApiResources.statusapp.equals("0")){
-
-                        Intent intent=new Intent(getContext(), UpdateActivity.class);
-                        intent.putExtra("apk",apk);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                        startActivity(intent);
-
-
-                Toast.makeText(getActivity(),"APPNOTFOUND" , Toast.LENGTH_LONG).show();
-
-
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
-
-
-    }
 
     private void getAdDetails(String url){
 
@@ -1143,6 +1110,151 @@ public class HomeFragment extends Fragment {
 
 
     }
+
+    public void dialognew(){
+
+        //before inflating the custom alert dialog layout, we will get the current activity viewgroup
+        ViewGroup viewGroup = getView().findViewById(android.R.id.content);
+
+
+        //then we will inflate the custom alert dialog xml that we created
+        final View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.popup_dialog, viewGroup, false);
+
+        TextView judulnotif = dialogView.findViewById(R.id.judulpesan);
+        TextView isinotif = dialogView.findViewById(R.id.isipesan);
+        ImageView icon =dialogView.findViewById(R.id.icon);
+        ImageView foto= dialogView.findViewById(R.id.foto);
+
+        Glide.with(getContext())
+                .load(ApiResources.icon)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(icon);
+
+        Glide.with(getContext())
+                .load(ApiResources.foto)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(foto);
+
+        Button button = dialogView.findViewById(R.id.buttonOk);
+
+        button.setText("Install Now");
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        //setting the view of the builder to our custom view that we already inflated
+
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        final AlertDialog alertDialog = builder.create();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (ApiResources.apknew.equals("")){
+
+                    alertDialog.dismiss();
+
+
+                }
+                else{
+                    final String appPackageName = ApiResources.apknew; // getPackageName() from Context or Activity object
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    };
+                }
+
+            }
+        });
+
+        judulnotif.setText(ApiResources.judulstatus);
+        isinotif.setText(ApiResources.pesan);
+
+
+
+
+
+
+        alertDialog.show();
+    }
+
+
+    private void getStatusapp(String url){
+
+        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+
+                try {
+                    JSONObject jsonObject=response.getJSONObject("statusapp");
+
+                    ApiResources.statusapp = jsonObject.getString("statusapp");
+                    String apk = jsonObject.getString("apk");
+
+                    if (ApiResources.statusapp.equals("0")){
+
+                        Intent intent=new Intent(getContext(), UpdateActivity.class);
+                        intent.putExtra("apk",apk);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        startActivity(intent);
+
+
+                        Toast.makeText(getContext(),"APPNOTFOUND" , Toast.LENGTH_LONG).show();
+
+
+
+                    }
+
+                    JSONObject jsonObject1=response.getJSONObject("notifapp");
+
+                    ApiResources.statusnotif = jsonObject1.getString("statusnotif");
+                    ApiResources.judulstatus = jsonObject1.getString("judulstatus");
+                    ApiResources.pesan = jsonObject1.getString("pesan");
+                    ApiResources.foto = jsonObject1.getString("foto");
+                    ApiResources.icon = jsonObject1.getString("icon");
+                    ApiResources.apknew = jsonObject1.getString("apk");
+                    System.out.println("statusnotif:"+ApiResources.statusnotif);
+
+                    if (ApiResources.statusnotif.equals("1"))
+                    {
+                        dialognew();
+
+                    }
+
+
+
+
+
+
+
+                } catch (JSONException e) {
+                    System.out.println("Error json" +e);
+                    e.printStackTrace();
+
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("ggl"+error);
+
+            }
+        });
+
+        Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
+
+
+    }
+
+
 
 
 

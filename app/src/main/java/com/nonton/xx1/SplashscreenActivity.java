@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,6 +33,7 @@ import com.startapp.android.publish.adsCommon.AutoInterstitialPreferences;
 import com.startapp.android.publish.adsCommon.StartAppAd;
 import com.startapp.android.publish.adsCommon.StartAppSDK;
 import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
+import com.startapp.android.publish.adsCommon.adListeners.AdEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,6 +82,7 @@ public class SplashscreenActivity extends AppCompatActivity {
 
 
         getAdDetails(new ApiResources().getAdDetails());
+
 
 
 //        Thread timer = new Thread() {
@@ -283,34 +286,58 @@ public class SplashscreenActivity extends AppCompatActivity {
             @Override
             public void onAdFailedToLoad(int errorCode) {
 
-                StartAppAd startAppAd = new StartAppAd(getContext());
-                startAppAd.showAd(new AdDisplayListener() {
+                final StartAppAd startAppAd = new StartAppAd(getContext());
+                startAppAd.loadAd(new AdEventListener() {
                     @Override
-                    public void adHidden(com.startapp.android.publish.adsCommon.Ad ad) {
-                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
-                        finish();
+                    public void onReceiveAd(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                        ProgressBar progressBar =findViewById(R.id.progressbar1);
+                        progressBar.setVisibility(View.GONE);
+
+                        Button button =findViewById(R.id.startbut);
+                        button.setVisibility(View.VISIBLE);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startAppAd.showAd(new AdDisplayListener() {
+                                    @Override
+                                    public void adHidden(com.startapp.android.publish.adsCommon.Ad ad) {
+                                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void adDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                                    }
+
+                                    @Override
+                                    public void adClicked(com.startapp.android.publish.adsCommon.Ad ad) {
+                                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                                        finish();
+
+                                    }
+
+                                    @Override
+                                    public void adNotDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+
+                                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
+                                        finish();
+
+                                    }
+                                })   ;
+
+
+                            }
+                        });
+
                     }
 
                     @Override
-                    public void adDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
+                    public void onFailedToReceiveAd(com.startapp.android.publish.adsCommon.Ad ad) {
 
                     }
-
-                    @Override
-                    public void adClicked(com.startapp.android.publish.adsCommon.Ad ad) {
-                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
-                        finish();
-
-                    }
-
-                    @Override
-                    public void adNotDisplayed(com.startapp.android.publish.adsCommon.Ad ad) {
-
-                        startActivity(new Intent(SplashscreenActivity.this,MainActivity.class));
-                        finish();
-
-                    }
-                })   ;
+                });
 
 
 
@@ -343,6 +370,7 @@ public class SplashscreenActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 }

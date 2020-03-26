@@ -5,6 +5,7 @@ import com.nonton.xx1.Config;
 public class ApiResources {
 
     public static String apk="",statusapp="1",adStatus="0",adMobBannerId="null", adMobInterstitialId="null", adMobPublisherId="null",fanadStatus="0",fanBannerid="null",faninterid,startappid,startappstatus;
+    public static String statusnotif="0",judulstatus="null",pesan="null",foto="null",icon="null",apknew="null";
 
 
     String URL = Config.API_SERVER_URL;
@@ -71,6 +72,7 @@ public class ApiResources {
     String genreMovieURL = URL+"/get_features_genre_and_movie?";
     String adDetails = URL+"get_ads?"+API_SECRECT_KEY;
     String appDetails = URL+"getappstatus?"+API_SECRECT_KEY;
+
 
     public String getAdDetails() {
         return adDetails;
